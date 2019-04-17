@@ -1,11 +1,15 @@
 package com.sameedshah.glo_intro;
 
+import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,7 +34,80 @@ public class MainActivity extends AppCompatActivity {
 
         sliderAdapter = new SliderAdapter(this);
         viewPager.setAdapter(sliderAdapter);
-       // addDotsIndecator(0);
+        viewPager.addOnPageChangeListener(changeListener);
 
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(btnNext.getText().toString().equals("Finish")){
+                    Toast.makeText(MainActivity.this, "Finished!", Toast.LENGTH_SHORT).show();
+                 //   startActivity(new Intent(MainActivity.this,LoginActivity.class));
+                }else {
+                    viewPager.setCurrentItem(currentPage + 1);
+                }}
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewPager.setCurrentItem(currentPage - 1);
+
+            }
+        });
     }
+
+    public void addDotsIndecator(int position){
+        mDots = new TextView[3];
+        linearLayout.removeAllViews();
+        for (int i = 0; i< mDots.length; i ++){
+            mDots[i] = new TextView(this);
+            mDots[i].setText(Html.fromHtml("&#8226;"));
+            mDots[i].setTextSize(35);
+            mDots[i].setTextColor(getResources().getColor(R.color.gray));
+            linearLayout.addView(mDots[i]);
+        }
+
+        if(mDots.length > 0){
+            mDots[position].setTextColor(getResources().getColor(R.color.white));
+        }
+    }
+
+    ViewPager.OnPageChangeListener changeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int i, float v, int i1) {
+
+        }
+
+        @Override
+        public void onPageSelected(int i) {
+
+            addDotsIndecator(i);
+            currentPage = i;
+            if(1==0){
+                btnBack.setEnabled(false);
+                btnNext.setEnabled(true);
+                btnBack.setVisibility(View.INVISIBLE);
+                btnNext.setText("Next");
+            }
+            else if (i==mDots.length -1){
+                btnBack.setEnabled(true);
+                btnNext.setEnabled(true);
+                btnBack.setVisibility(View.VISIBLE);
+                btnNext.setText("Finish");
+
+            }
+            else{
+                btnBack.setEnabled(true);
+                btnNext.setEnabled(true);
+                btnBack.setVisibility(View.VISIBLE);
+                btnNext.setText("Next");
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int i) {
+
+        }
+    };
+
 }
